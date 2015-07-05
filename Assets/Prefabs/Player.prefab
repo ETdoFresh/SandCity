@@ -47,9 +47,11 @@ GameObject:
   - 114: {fileID: 11428834}
   - 114: {fileID: 11447230}
   - 114: {fileID: 11480730}
+  - 114: {fileID: 11443202}
+  - 114: {fileID: 11496200}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -73,7 +75,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 188626}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.3499999, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 401942}
@@ -201,6 +203,18 @@ MonoBehaviour:
     i15: 58
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
+--- !u!114 &11443202
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 188626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 441e247d0f11f5e42abefcca6d76dca6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpAxisScale: 20
 --- !u!114 &11447230
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -234,7 +248,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementAxisScale: 20
   rotationAxisScale: 4
-  jumpAxisScale: 20
+--- !u!114 &11496200
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 188626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2decab6647c92ad4187999cee5359c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bullet: {fileID: 124470, guid: 8cb684d7455bf634883fa97705ab0382, type: 2}
 --- !u!136 &13663122
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -274,6 +299,22 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_InterpolateRotation
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: _bullet
+      value: 
+      objectReference: {fileID: 124470, guid: 8cb684d7455bf634883fa97705ab0382, type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
