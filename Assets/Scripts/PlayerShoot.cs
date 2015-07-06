@@ -4,9 +4,7 @@ using UnityEngine.Networking;
 
 public class PlayerShoot : NetworkBehaviour
 {
-    [SerializeField] GameObject _bullet;
-    enum MOUSEBUTTON { LEFT, RIGHT, MIDDLE }
-    
+    [SerializeField] GameObject _bullet;    
     Rigidbody _rigidBody;
 
     void Start()
@@ -25,7 +23,7 @@ public class PlayerShoot : NetworkBehaviour
         if (!isLocalPlayer)
             return;
 
-        if (Input.GetMouseButtonDown((int)MOUSEBUTTON.LEFT))
+        if (Input.GetButtonDown("Fire2"))
             CmdPlayerShoot();
     }
 
