@@ -44,8 +44,8 @@ GameObject:
   - 4: {fileID: 429466}
   - 136: {fileID: 13663122}
   - 54: {fileID: 5489078}
-  - 195: {fileID: 19589476}
   - 114: {fileID: 11475116}
+  - 195: {fileID: 19589476}
   - 114: {fileID: 11445050}
   - 114: {fileID: 11464606}
   - 114: {fileID: 11429536}
@@ -164,12 +164,12 @@ Rigidbody:
   m_GameObject: {fileID: 188626}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 1.5
-  m_AngularDrag: 5
+  m_Drag: 0
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &11429536
 MonoBehaviour:
@@ -246,6 +246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842e0121548809e47b6ce9ee788aea8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  navigationMode: 1
+  RigidbodyVelocity: 0
 --- !u!136 &13663122
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -276,7 +278,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0
+  m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!1001 &100100000
@@ -288,15 +290,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: m_Constraints
-      value: 80
+      value: 112
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_AngularDrag
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Drag
-      value: 1.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_SyncSpin
@@ -336,6 +338,26 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_SnapThreshold
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Speed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Acceleration
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_BaseOffset
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: navigationMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Mass
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

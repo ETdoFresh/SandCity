@@ -3,9 +3,14 @@ using UnityEngine.Networking;
 
 public class PlayerMovement : NetworkBehaviour
 {
+    public enum NavigationMode { NAVMESH_ONLY, NAVMESH_RIGIDBODY }
+
     Rigidbody _rigidBody;
     NavMeshAgent _navMeshAgent;
     float _slowRadius; // At full speed, what is the stopping distance
+
+    public NavigationMode navigationMode = NavigationMode.NAVMESH_ONLY;
+    public float RigidbodyVelocity;
 
     void Start()
     {
@@ -13,6 +18,7 @@ public class PlayerMovement : NetworkBehaviour
         _navMeshAgent = GetComponent<NavMeshAgent>();
 
         _rigidBody.isKinematic = isServer ? false : true;
+        _navMeshAgent.enabled = isServer ? true : false;
 
         _navMeshAgent.updatePosition = false;
         _navMeshAgent.updateRotation = true;
@@ -26,19 +32,47 @@ public class PlayerMovement : NetworkBehaviour
 
     void FixedUpdate()
     {
-        NavMeshRigidBodyControl();
+        SelectMovementMode();
         CheckGroundClick();
+    }
+
+    [Server]
+    void SelectMovementMode()
+    {
+        switch (navigationMode)
+        {
+            case NavigationMode.NAVMESH_ONLY:
+                if (!_rigidBody.isKinematic)
+                    _rigidBody.isKinematic = true;
+                if (!_navMeshAgent.updatePosition)
+                    _navMeshAgent.updatePosition = true;
+                break;
+            case NavigationMode.NAVMESH_RIGIDBODY:
+                if (_rigidBody.isKinematic)
+                    _rigidBody.isKinematic = false;
+                if (_navMeshAgent.updatePosition)
+                    _navMeshAgent.updatePosition = false;
+                NavMeshRigidBodyControl();
+                break;
+        }
     }
 
     [Server]
     void NavMeshRigidBodyControl()
     {
-        if (Vector3.Distance(transform.position, _navMeshAgent.destination) > _slowRadius)
-            _rigidBody.AddForce(_navMeshAgent.velocity * 5);
-        else
-        {
-            _rigidBody.velocity = _navMeshAgent.velocity;
-        }
+        RigidbodyVelocity = _rigidBody.velocity.magnitude;
+        float mass = _rigidBody.mass;
+        float acceleration = _navMeshAgent.acceleration;
+        float maxspeed = _navMeshAgent.speed;
+        float currentspeed = _rigidBody.velocity.magnitude;
+        Vector3 changeInVelocity = _navMeshAgent.desiredVelocity - _rigidBody.velocity;
+        changeInVelocity.y = 0;
+
+        if (changeInVelocity.magnitude > _navMeshAgent.acceleration)
+            changeInVelocity = changeInVelocity.normalized * _navMeshAgent.acceleration;
+
+        _rigidBody.AddForce(mass * changeInVelocity / Time.fixedDeltaTime);
+
         _navMeshAgent.nextPosition = transform.position + Time.deltaTime * _rigidBody.velocity;
     }
 
