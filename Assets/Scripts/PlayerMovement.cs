@@ -7,7 +7,7 @@ public class PlayerMovement : NetworkBehaviour
 
     Rigidbody _rigidBody;
     NavMeshAgent _navMeshAgent;
-    float _slowRadius; // At full speed, what is the stopping distance
+    //float _slowRadius; // At full speed, what is the stopping distance
 
     public NavigationMode navigationMode = NavigationMode.NAVMESH_ONLY;
     public float RigidbodyVelocity;
@@ -23,11 +23,11 @@ public class PlayerMovement : NetworkBehaviour
         _navMeshAgent.updatePosition = false;
         _navMeshAgent.updateRotation = true;
 
-        float initialVelocity = _navMeshAgent.speed;
-        float finalVelocity = 0;
-        float acceleration = -_navMeshAgent.acceleration; // aka deceleration
-        float timeToStop = (finalVelocity - initialVelocity) / acceleration;
-        _slowRadius = (initialVelocity * timeToStop) + (1 / 2) * (acceleration * Mathf.Pow(timeToStop, 2));
+        //float initialVelocity = _navMeshAgent.speed;
+        //float finalVelocity = 0;
+        //float acceleration = -_navMeshAgent.acceleration; // aka deceleration
+        //float timeToStop = (finalVelocity - initialVelocity) / acceleration;
+        //_slowRadius = (initialVelocity * timeToStop) + (1 / 2) * (acceleration * Mathf.Pow(timeToStop, 2));
     }
 
     void FixedUpdate()
@@ -62,9 +62,9 @@ public class PlayerMovement : NetworkBehaviour
     {
         RigidbodyVelocity = _rigidBody.velocity.magnitude;
         float mass = _rigidBody.mass;
-        float acceleration = _navMeshAgent.acceleration;
-        float maxspeed = _navMeshAgent.speed;
-        float currentspeed = _rigidBody.velocity.magnitude;
+        //float acceleration = _navMeshAgent.acceleration;
+        //float maxspeed = _navMeshAgent.speed;
+        //float currentspeed = _rigidBody.velocity.magnitude;
         Vector3 changeInVelocity = _navMeshAgent.desiredVelocity - _rigidBody.velocity;
         changeInVelocity.y = 0;
 
@@ -86,7 +86,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            int layerMask = ~(1 << LayerMask.NameToLayer("Ground"));
+            //int layerMask = ~(1 << LayerMask.NameToLayer("Ground"));
             if (Physics.Raycast(ray, out hit))
                 CmdSetDestination(hit.point);
         }

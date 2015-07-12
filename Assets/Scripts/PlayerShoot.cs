@@ -5,12 +5,6 @@ using UnityEngine.Networking;
 public class PlayerShoot : NetworkBehaviour
 {
     [SerializeField] GameObject _bullet;    
-    Rigidbody _rigidBody;
-
-    void Start()
-    {
-        _rigidBody = GetComponent<Rigidbody>();
-    }
 
     void FixedUpdate()
     {
