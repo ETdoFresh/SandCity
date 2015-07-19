@@ -29,8 +29,10 @@ public class HumanoidMovement : MonoBehaviour
     bool m_IsGrounded;
     bool m_Crouching;
     float m_OrigGroundCheckDistance;
-    private float _slowRadius;
-    private bool _buttonJump;
+    float _slowRadius;
+    bool _buttonJump;
+    bool _buttonToggleWalk;
+    bool _buttonToggleCrouch;
 
     // Use this for initialization
     void Start()
@@ -62,9 +64,13 @@ public class HumanoidMovement : MonoBehaviour
 
         bool jump = Input.GetButtonDown("Jump") || _buttonJump;
         _buttonJump = false;
-        bool crouch = Input.GetKey(KeyCode.C);
+        bool crouch = Input.GetKey(KeyCode.C) || _buttonToggleCrouch;
 
-        MoveUpdate(GetSlowRadiusVelocity(), jump, crouch);
+        Vector3 move = GetSlowRadiusVelocity();
+        if ((Input.GetButton("Fire3") || _buttonToggleWalk) && !crouch)
+            move *= 0.5f;
+
+        MoveUpdate(move, jump, crouch);
         _navMeshAgent.nextPosition = transform.position;
     }
 
@@ -203,5 +209,17 @@ public class HumanoidMovement : MonoBehaviour
     public void JumpButton()
     {
         _buttonJump = true;
+    }
+
+    public void ToggleWalkButton()
+    {
+        _buttonToggleWalk = !_buttonToggleWalk;
+        _buttonToggleCrouch = false;
+    }
+
+    public void ToggleCrouchButton()
+    {
+        _buttonToggleCrouch = !_buttonToggleCrouch;
+        _buttonToggleWalk = false;
     }
 }
