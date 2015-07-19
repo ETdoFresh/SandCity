@@ -17,6 +17,7 @@ public class HumanoidMovement : MonoBehaviour
     float m_GravityMultiplier = 2;
     [SerializeField]
     float m_JumpPower = 6;
+    public Vector3 force;
 
     Rigidbody _rigidBody;
     Animator _animator;
@@ -28,6 +29,8 @@ public class HumanoidMovement : MonoBehaviour
     bool m_IsGrounded;
     bool m_Crouching;
     float m_OrigGroundCheckDistance;
+    private float _slowRadius;
+    private bool _buttonJump;
 
     // Use this for initialization
     void Start()
@@ -57,10 +60,30 @@ public class HumanoidMovement : MonoBehaviour
                 _navMeshAgent.SetDestination(hit.point);
         }
 
-        bool jump = Input.GetButtonDown("Jump");
+        bool jump = Input.GetButtonDown("Jump") || _buttonJump;
+        _buttonJump = false;
         bool crouch = Input.GetKey(KeyCode.C);
 
-        MoveUpdate(_navMeshAgent.desiredVelocity, jump, crouch);
+        MoveUpdate(GetSlowRadiusVelocity(), jump, crouch);
+        _navMeshAgent.nextPosition = transform.position;
+    }
+
+    Vector3 GetSlowRadiusVelocity()
+    {
+        _slowRadius = (_navMeshAgent.speed * _navMeshAgent.speed) / (2 * _navMeshAgent.acceleration);
+
+        // Default Desired Velocity is Max Speed
+        Vector3 trueDesiredVelocity = _navMeshAgent.desiredVelocity.normalized * _navMeshAgent.velocity.magnitude;
+
+        // If distance to target is less than slow radius, slow down desired velocity
+        float distanceToTarget = Vector3.Distance(transform.position, _navMeshAgent.destination);
+        if (distanceToTarget < _navMeshAgent.stoppingDistance)
+            trueDesiredVelocity = Vector3.zero;
+        else if (distanceToTarget < _slowRadius)
+            trueDesiredVelocity = trueDesiredVelocity.normalized * Mathf.Sqrt(2 * _navMeshAgent.acceleration * distanceToTarget);
+
+        // Return velocity / speed (0.0 - 1.0)
+        return trueDesiredVelocity / _navMeshAgent.speed;
     }
 
     void OnAnimatorMove()
@@ -69,21 +92,27 @@ public class HumanoidMovement : MonoBehaviour
         // this allows us to modify the positional speed before it's applied.
         if (m_IsGrounded && Time.deltaTime > 0)
         {
-            Vector3 v = (_animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
-
-            _navMeshAgent.nextPosition = transform.position;
-
-            transform.position += _animator.deltaPosition;
-            transform.rotation *= _animator.deltaRotation;
+            Vector3 animatorVelocity = (_animator.deltaPosition) / Time.deltaTime;
+            Vector3 changeInVelocity = animatorVelocity - _rigidBody.velocity;
 
             // we preserve the existing y part of the current velocity.
-            //v.y = _rigidBody.velocity.y;
-            //_rigidBody.velocity = v;
+            changeInVelocity.y = 0;
+
+            float mass = _rigidBody.mass;
+            force = mass * changeInVelocity / Time.fixedDeltaTime;
+            if (force.magnitude > _navMeshAgent.speed * 5)
+                force = force.normalized * _navMeshAgent.speed * 5;
+            _rigidBody.AddForce(force);
+            
+            // Maybe this can replace above
+            //_rigidBody.AddForce(changeInVelocity, ForceMode.VelocityChange);
         }
     }
 
     public void MoveUpdate(Vector3 move, bool jump = false, bool crouch = false)
     {
+        m_Crouching = crouch;
+
         // convert the world relative moveInput vector into a local-relative
         // turn amount and forward amount required to head in the desired
         // direction.
@@ -169,5 +198,10 @@ public class HumanoidMovement : MonoBehaviour
         }
 
         _animator.speed = _navMeshAgent.speed / 5.661f;
+    }
+
+    public void JumpButton()
+    {
+        _buttonJump = true;
     }
 }
